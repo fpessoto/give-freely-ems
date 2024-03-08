@@ -3,6 +3,10 @@ import { Employee } from './employee/components/EmployeeList/EmployeeDataTable';
 
 export const columns: ColumnDef<Employee>[] = [
   {
+    accessorKey: 'id',
+    header: 'ID',
+  },
+  {
     accessorKey: 'firstName',
     header: 'First Name',
   },

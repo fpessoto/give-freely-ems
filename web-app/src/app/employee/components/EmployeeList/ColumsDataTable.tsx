@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Checkbox } from '@/components/ui/checkbox';
-import EditEmployee from '@/app/employee/[id]/page';
 
 export const columns: ColumnDef<Employee>[] = [
   {
@@ -36,6 +35,13 @@ export const columns: ColumnDef<Employee>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: 'id',
+    header: 'Id',
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue('id')}</div>
+    ),
   },
   {
     accessorKey: 'firstName',
@@ -69,7 +75,20 @@ export const columns: ColumnDef<Employee>[] = [
     accessorKey: 'dateOfJoining',
     header: 'Date of Joining',
     cell: ({ row }) => (
-      <div>{row.getValue('dateOfJoining').toLocaleDateString()}</div>
+      <div>
+        {(row.getValue('dateOfJoining') as Date).toLocaleDateString()}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'yearsOfService',
+    header: 'Years Of Service',
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {(row.getValue('yearsOfService') as number) < 1
+          ? '< 1'
+          : row.getValue('yearsOfService')}
+      </div>
     ),
   },
   {

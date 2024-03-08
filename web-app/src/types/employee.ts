@@ -5,4 +5,5 @@ export type Employee = {
   email: string;
   jobTitle: string;
   dateOfJoining: Date;
+  yearsOfService: number;
 };

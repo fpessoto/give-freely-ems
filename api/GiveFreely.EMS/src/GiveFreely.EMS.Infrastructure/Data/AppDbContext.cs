@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Ardalis.SharedKernel;
 using GiveFreely.EMS.Core.ContributorAggregate;
+using GiveFreely.EMS.Core.EmployeeAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace GiveFreely.EMS.Infrastructure.Data;
@@ -16,6 +17,7 @@ public class AppDbContext : DbContext
   }
 
   public DbSet<Contributor> Contributors => Set<Contributor>();
+  public DbSet<Employee> Employees => Set<Employee>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

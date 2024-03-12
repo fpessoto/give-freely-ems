@@ -10,11 +10,8 @@ public class CreateEmployeeHandler(IRepository<Employee> _repository)
   public async Task<Result<int>> Handle(CreateEmployeeCommand request,
     CancellationToken cancellationToken)
   {
-    var newEmployee = new Employee(request.Name);
-    if (!string.IsNullOrEmpty(request.PhoneNumber))
-    {
-      newEmployee.SetPhoneNumber(request.PhoneNumber);
-    }
+    var newEmployee = new Employee(request.FirstName, request.LastName, request.Email, request.JobTitle, request.DateOfJoining);
+
     var createdItem = await _repository.AddAsync(newEmployee, cancellationToken);
 
     return createdItem.Id;

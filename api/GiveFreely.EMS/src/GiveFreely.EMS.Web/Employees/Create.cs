@@ -22,7 +22,14 @@ public class Create(IMediator _mediator)
       // XML Docs are used by default but are overridden by these properties:
       //s.Summary = "Create a new Employee.";
       //s.Description = "Create a new Employee. A valid name is required.";
-      s.ExampleRequest = new CreateEmployeeRequest { Name = "Employee Name" };
+      s.ExampleRequest = new CreateEmployeeRequest
+      {
+        FirstName = "John",
+        LastName = "Doe",
+        Email = "jdoe@mail.com",
+        JobTitle = "Analyst",
+        DateOfJoining = DateTime.Now
+      };
     });
   }
 
@@ -30,12 +37,15 @@ public class Create(IMediator _mediator)
     CreateEmployeeRequest request,
     CancellationToken cancellationToken)
   {
-    var result = await _mediator.Send(new CreateEmployeeCommand(request.Name!,
-      request.PhoneNumber), cancellationToken);
+    var result = await _mediator.Send(new CreateEmployeeCommand(request.FirstName!,
+                                                                request.LastName!,
+                                                                request.Email!,
+                                                                request.JobTitle!,
+                                                                request.DateOfJoining!), cancellationToken);
 
     if (result.IsSuccess)
     {
-      Response = new CreateEmployeeResponse(result.Value, request.Name!);
+      Response = new CreateEmployeeResponse(result.Value, request.FirstName!);
       return;
     }
     // TODO: Handle other cases as necessary

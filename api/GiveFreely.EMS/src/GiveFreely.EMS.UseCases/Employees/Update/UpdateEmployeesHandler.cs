@@ -15,11 +15,29 @@ public class UpdateEmployeeHandler(IRepository<Employee> _repository)
       return Result.NotFound();
     }
 
-    existingEmployee.UpdateName(request.NewName!);
+    if (!string.IsNullOrEmpty(request.FirstName))
+      existingEmployee.UpdateFirstName(request.FirstName!);
+
+    if (!string.IsNullOrEmpty(request.LastName))
+      existingEmployee.UpdateLastName(request.LastName!);
+
+    if (!string.IsNullOrEmpty(request.Email))
+      existingEmployee.UpdateEmail(request.Email!);
+
+    if (!string.IsNullOrEmpty(request.JobTitle))
+      existingEmployee.UpdateJobTitle(request.JobTitle!);
+
+    if (request.DateOfJoining != null)
+      existingEmployee.UpdateDateOfJoining((DateTime)request.DateOfJoining);
 
     await _repository.UpdateAsync(existingEmployee, cancellationToken);
 
-    return Result.Success(new EmployeeDTO(existingEmployee.Id,
-      existingEmployee.Name, existingEmployee.PhoneNumber?.Number ?? ""));
+    return Result.Success(
+      new EmployeeDTO(existingEmployee.Id,
+                      existingEmployee.FirstName,
+                      existingEmployee.LastName,
+                      existingEmployee.Email,
+                      existingEmployee.JobTitle, existingEmployee.DateOfJoining,
+                      existingEmployee.TotalYearsOfService));
   }
 }

@@ -1,4 +1,4 @@
-﻿using GiveFreely.EMS.Core;
+﻿using GiveFreely.EMS.Core.EmployeeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

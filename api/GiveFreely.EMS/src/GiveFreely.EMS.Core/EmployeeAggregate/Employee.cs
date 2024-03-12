@@ -38,11 +38,24 @@ public class Employee(string firstName,
     LastName = Guard.Against.NullOrEmpty(lastName, nameof(lastName));
   }
 
+  public void UpdateEmail(string email)
+  {
+    Email = Guard.Against.NullOrEmpty(email, nameof(email));
+  }
+
+  public void UpdateJobTitle(string jobTitle)
+  {
+    JobTitle = Guard.Against.NullOrEmpty(jobTitle, nameof(jobTitle));
+  }
+
+  public void UpdateDateOfJoining(DateTime dateOfJoining)
+  {
+    DateOfJoining = Guard.Against.Null(dateOfJoining, nameof(dateOfJoining));
+  }
+
   public void DeleteEmployee()
   {
     throw new NotImplementedException();
   }
-
-
 
 }

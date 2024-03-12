@@ -28,7 +28,7 @@ public class List(IMediator _mediator) : EndpointWithoutRequest<EmployeeListResp
     {
       Response = new EmployeeListResponse
       {
-        Employees = result.Value.Select(c => new EmployeeRecord(c.Id, c.Name, c.PhoneNumber)).ToList()
+        Employees = result.Value.Select(c => Mapper.Map(c)).ToList()
       };
     }
   }

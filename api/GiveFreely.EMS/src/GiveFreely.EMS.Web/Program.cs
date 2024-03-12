@@ -47,7 +47,7 @@ if (builder.Environment.IsDevelopment())
 {
   // Use a local test email server
   // See: https://ardalis.com/configuring-a-local-test-email-server/
-  builder.Services.AddScoped<IEmailSender, MimeKitEmailSender>();
+  builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 
   // Otherwise use this:
   //builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
@@ -55,7 +55,7 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-  builder.Services.AddScoped<IEmailSender, MimeKitEmailSender>();
+  builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 }
 
 var app = builder.Build();

@@ -11,11 +11,12 @@ public class UpdateEmployeeValidator : Validator<UpdateEmployeeRequest>
 {
   public UpdateEmployeeValidator()
   {
-    RuleFor(x => x.Name)
+    RuleFor(x => x.FirstName)
       .NotEmpty()
       .WithMessage("Name is required.")
       .MinimumLength(2)
       .MaximumLength(DataSchemaConstants.DEFAULT_NAME_LENGTH);
+
     RuleFor(x => x.EmployeeId)
       .Must((args, EmployeeId) => args.Id == EmployeeId)
       .WithMessage("Route and body Ids must match; cannot update Id of an existing resource.");

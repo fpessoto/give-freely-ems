@@ -6,4 +6,8 @@ namespace GiveFreely.EMS.UseCases.Employees.Create;
 /// Create a new Employee.
 /// </summary>
 /// <param name="Name"></param>
-public record CreateEmployeeCommand(string Name, string? PhoneNumber) : Ardalis.SharedKernel.ICommand<Result<int>>;
+public record CreateEmployeeCommand(string FirstName,
+                      string LastName,
+                      string Email,
+                      string JobTitle,
+                      DateTime DateOfJoining) : Ardalis.SharedKernel.ICommand<Result<int>>;

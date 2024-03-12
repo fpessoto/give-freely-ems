@@ -6,6 +6,7 @@ using GiveFreely.EMS.Infrastructure.Data;
 using GiveFreely.EMS.Infrastructure.Data.Queries;
 using GiveFreely.EMS.Infrastructure.Email;
 using GiveFreely.EMS.UseCases.Contributors.List;
+using GiveFreely.EMS.UseCases.Employees.List;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,9 @@ public static class InfrastructureServiceExtensions
     services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
     services.AddScoped<IListContributorsQueryService, ListContributorsQueryService>();
     services.AddScoped<IDeleteContributorService, DeleteContributorService>();
+
+    services.AddScoped<IListEmployeesQueryService, ListEmployeesQueryService>();
+    services.AddScoped<IDeleteEmployeeService, DeleteEmployeeService>();
 
     services.Configure<MailserverConfiguration>(config.GetSection("Mailserver"));
 

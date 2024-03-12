@@ -26,7 +26,12 @@ public class Update(IMediator _mediator)
     UpdateEmployeeRequest request,
     CancellationToken cancellationToken)
   {
-    var result = await _mediator.Send(new UpdateEmployeeCommand(request.Id, request.Name!), cancellationToken);
+    var result = await _mediator.Send(new UpdateEmployeeCommand(request.Id,
+                                                                request.FirstName!,
+                                                                request.LastName!,
+                                                                request.Email!,
+                                                                request.JobTitle!,
+                                                                request.DateOfJoining!), cancellationToken);
 
     if (result.Status == ResultStatus.NotFound)
     {
@@ -47,7 +52,7 @@ public class Update(IMediator _mediator)
     if (queryResult.IsSuccess)
     {
       var dto = queryResult.Value;
-      Response = new UpdateEmployeeResponse(new EmployeeRecord(dto.Id, dto.Name, dto.PhoneNumber));
+      Response = new UpdateEmployeeResponse(Mapper.Map(dto));
       return;
     }
   }

@@ -17,6 +17,6 @@ public class GetEmployeeHandler(IReadRepository<Employee> _repository)
     var entity = await _repository.FirstOrDefaultAsync(spec, cancellationToken);
     if (entity == null) return Result.NotFound();
 
-    return new EmployeeDTO(entity.Id, entity.Name, entity.PhoneNumber?.Number ?? "");
+    return new EmployeeDTO(entity.Id, entity.FirstName, entity.LastName, entity.Email, entity.JobTitle, entity.DateOfJoining, entity.TotalYearsOfService);
   }
 }

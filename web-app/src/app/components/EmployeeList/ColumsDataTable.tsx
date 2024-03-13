@@ -8,11 +8,11 @@ import {
   TrashIcon,
 } from '@radix-ui/react-icons';
 import { Checkbox } from '@/components/ui/checkbox';
-import { deleteEmployee } from '@/lib/actions';
+import { deleteEmployeeAction } from '@/lib/actions';
 import Link from 'next/link';
 
 export function DeleteEmployee({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteEmployee.bind(null, id);
+  const deleteInvoiceWithId = deleteEmployeeAction.bind(null, id);
 
   return (
     <form action={deleteInvoiceWithId}>
@@ -31,7 +31,7 @@ export function EditEmployee({ id }: { id: string }) {
       type="button"
       className="rounded-md border p-2 hover:bg-gray-100"
     >
-      <Link href={`/employees/${id}`} prefetch={false}>
+      <Link href={`/${id}`} prefetch={false}>
         <span className="sr-only">Edit</span>
         <Pencil1Icon className="w-4" />
       </Link>

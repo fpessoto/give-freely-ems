@@ -26,9 +26,8 @@ import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import { toast, useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
-import { revalidatePath, revalidateTag } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { Employee } from '@/types/employee';
+import { createEmployee, editEmployee } from '@/lib/services';
 
 export const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -72,14 +71,13 @@ export default function EmployeeForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('onSubmit');
     if (existentEmployee) {
-      const response = await editEmployee(
-        values,
-        existentEmployee.id
-      );
+      await edit({
+        ...values,
+        id: existentEmployee.id,
+      });
     } else {
-      const response = await createEmployee(values);
+      await create(values);
     }
   }
 
@@ -163,7 +161,7 @@ export default function EmployeeForm({
           name="dateOfJoining"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>Date of Joining</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -175,7 +173,7 @@ export default function EmployeeForm({
                       )}
                     >
                       {field.value ? (
-                        format(field.value, 'PPP')
+                        format(field.value, 'MM/dd/yyyy')
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -193,9 +191,7 @@ export default function EmployeeForm({
                   />
                 </PopoverContent>
               </Popover>
-              <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
@@ -203,7 +199,7 @@ export default function EmployeeForm({
         <div className="flex flw-row space-x-4">
           <Button type="submit">Submit</Button>
           <Button variant="link" type="button">
-            <Link href="/employees" prefetch={false}>
+            <Link href="/" prefetch={false}>
               Back
             </Link>
           </Button>
@@ -212,7 +208,7 @@ export default function EmployeeForm({
     </Form>
   );
 }
-async function createEmployee(values: {
+async function create(values: {
   firstName: string;
   lastName: string;
   email: string;
@@ -220,63 +216,29 @@ async function createEmployee(values: {
   dateOfJoining: Date;
 }) {
   try {
-    console.log('creating ...', values);
-
-    const response = await fetch('http://localhost/Employees', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Content type
-      },
-      body: JSON.stringify(values),
-    });
-
-    if (!response.ok) {
-      toast({
-        description: 'Unable to add the employee',
-      });
-      return;
-    }
+    await createEmployee(values);
 
     toast({
       description: 'Employee added with success',
     });
   } catch (error) {
     console.error(error);
+    toast({
+      description: 'Error trying to create the Employee!',
+    });
   }
 }
 
-async function editEmployee(
-  values: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    jobTitle: string;
-    dateOfJoining: Date;
-  },
-  id: string
-) {
+async function edit(values: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  dateOfJoining: Date;
+}) {
   try {
-    console.log('editing ...', values);
-
-    const data = {
-      ...values,
-      id,
-    };
-
-    const response = await fetch(`http://localhost/Employees/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json', // Content type
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      toast({
-        description: 'Unable to edit the employee',
-      });
-      return;
-    }
+    await editEmployee(values);
 
     toast({
       description: 'Employee edit with success',

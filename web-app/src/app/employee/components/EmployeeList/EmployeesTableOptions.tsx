@@ -7,12 +7,18 @@ import {
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
 } from '@radix-ui/react-dropdown-menu';
-import { ChevronDownIcon, PlusIcon } from '@radix-ui/react-icons';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { Input } from '../../../../components/ui/input';
 import router from 'next/router';
 import Link from 'next/link';
+import { Employee } from '@/types/employee';
+import { Table as TableType } from '@tanstack/react-table';
 
-function ColumnsMenuDropDown({ table }) {
+function ColumnsMenuDropDown({
+  table,
+}: {
+  table: TableType<Employee>;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,14 +49,18 @@ function ColumnsMenuDropDown({ table }) {
   );
 }
 
-export default function EmployeesTableOptions({ table }) {
+export default function EmployeesTableOptions({
+  table,
+}: {
+  table: TableType<Employee>;
+}) {
   const addEmployee = () => {
     console.log('Adding new employee');
     router.push('/add');
   };
 
   return (
-    <div className="flex flex-row items-center py-4">
+    <div className="flex flex-row items-center py-4 space-x-4">
       <Input
         placeholder="Filter First Name..."
         value={
@@ -61,6 +71,19 @@ export default function EmployeesTableOptions({ table }) {
         onChange={(event) =>
           table
             .getColumn('firstName')
+            ?.setFilterValue(event.target.value)
+        }
+        className="max-w-sm"
+      />
+      <Input
+        placeholder="Filter Last Name..."
+        value={
+          (table.getColumn('lastName')?.getFilterValue() as string) ??
+          ''
+        }
+        onChange={(event) =>
+          table
+            .getColumn('lastName')
             ?.setFilterValue(event.target.value)
         }
         className="max-w-sm"
@@ -80,7 +103,7 @@ export default function EmployeesTableOptions({ table }) {
       />
       <ColumnsMenuDropDown table={table}></ColumnsMenuDropDown>
 
-      <Button variant="outline" className="ml-auto">
+      <Button variant="default" className="ml-auto">
         <Link href="/employee/add">Add</Link>
       </Button>
     </div>

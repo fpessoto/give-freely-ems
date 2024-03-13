@@ -74,20 +74,16 @@ export const columns: ColumnDef<Employee>[] = [
   {
     accessorKey: 'dateOfJoining',
     header: 'Date of Joining',
-    cell: ({ row }) => (
-      <div>
-        {(row.getValue('dateOfJoining') as Date).toLocaleDateString()}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.getValue('dateOfJoining')}</div>,
   },
   {
-    accessorKey: 'yearsOfService',
+    accessorKey: 'totalYearsOfService',
     header: 'Years Of Service',
     cell: ({ row }) => (
-      <div className="capitalize">
-        {(row.getValue('yearsOfService') as number) < 1
+      <div>
+        {(row.getValue('totalYearsOfService') as number) < 1
           ? '< 1'
-          : row.getValue('yearsOfService')}
+          : row.getValue('totalYearsOfService')}
       </div>
     ),
   },

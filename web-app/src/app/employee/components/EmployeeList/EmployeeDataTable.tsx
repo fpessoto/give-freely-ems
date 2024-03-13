@@ -12,11 +12,17 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { columns } from './ColumsDataTable';
-import { mockEmployees } from '@/data/fake-employees';
 import EmployeesTable from './EmployeesTable';
 import EmployeesTableOptions from './EmployeesTableOptions';
+import { Employee } from '@/types/employee';
 
-export default function EmployeesDataTable() {
+type EmployeeDataTableProps = {
+  employees: Employee[];
+};
+
+export default function EmployeesDataTable({
+  employees,
+}: EmployeeDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>([]);
@@ -24,8 +30,10 @@ export default function EmployeesDataTable() {
     useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  console.log('dattable', employees);
+
   const table = useReactTable({
-    data: mockEmployees,
+    data: employees,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

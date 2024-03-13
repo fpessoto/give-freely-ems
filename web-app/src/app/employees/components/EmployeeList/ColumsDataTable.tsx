@@ -1,15 +1,43 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Employee } from '@/types/employee';
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+  DotsHorizontalIcon,
+  Pencil1Icon,
+  TrashIcon,
+} from '@radix-ui/react-icons';
 import { Checkbox } from '@/components/ui/checkbox';
+import { deleteEmployee } from '@/lib/actions';
+import Link from 'next/link';
+
+export function DeleteEmployee({ id }: { id: string }) {
+  const deleteInvoiceWithId = deleteEmployee.bind(null, id);
+
+  return (
+    <form action={deleteInvoiceWithId}>
+      <button className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-4" />
+      </button>
+    </form>
+  );
+}
+
+export function EditEmployee({ id }: { id: string }) {
+  return (
+    <Button
+      variant="link"
+      type="button"
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <Link href={`/employees/${id}`} prefetch={false}>
+        <span className="sr-only">Edit</span>
+        <Pencil1Icon className="w-4" />
+      </Link>
+    </Button>
+  );
+}
 
 export const columns: ColumnDef<Employee>[] = [
   {
@@ -94,36 +122,11 @@ export const columns: ColumnDef<Employee>[] = [
       const employee = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => deleteEmployee(employee.id)}
-            >
-              Delete
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => updateEmployee(employee.id)}
-            >
-              Edit
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex flex-row space-x-2">
+          <EditEmployee id={employee.id} />
+          <DeleteEmployee id={employee.id} />
+        </div>
       );
     },
   },
 ];
-
-const updateEmployee = (employeeId: string) => {
-  console.log('editing employee', employeeId);
-};
-
-const deleteEmployee = (employeeId: string) => {
-  console.log('deleting employee', employeeId);
-};

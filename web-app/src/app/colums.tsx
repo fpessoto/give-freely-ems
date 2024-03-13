@@ -1,5 +1,5 @@
+import { Employee } from '@/types/employee';
 import { ColumnDef } from '@tanstack/react-table';
-import { Employee } from './employee/components/EmployeeList/EmployeeDataTable'; // Assuming the Employee type is defined in Employees.tsx
 
 export const columns: ColumnDef<Employee>[] = [
   {

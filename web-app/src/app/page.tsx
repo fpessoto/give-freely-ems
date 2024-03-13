@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import EmployeesDataTable from './employee/components/EmployeeList/EmployeeDataTable';
+import EmployeesDataTable from './employees/components/EmployeeList/EmployeeDataTable';
 
 export default function Home() {
   return (

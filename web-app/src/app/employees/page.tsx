@@ -15,7 +15,9 @@ import {
 
 export const getEmployees = async () => {
   // Fetch data from external API
-  const res = await fetch('http://localhost/Employees');
+  const res = await fetch('http://localhost/Employees', {
+    next: { tags: ['get-employees'] },
+  });
   const data: { employees: Employee[] } = await res.json();
   return data.employees;
 };

@@ -30,8 +30,6 @@ export default function EmployeesDataTable({
     useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  console.log('dattable', employees);
-
   const table = useReactTable({
     data: employees,
     columns,

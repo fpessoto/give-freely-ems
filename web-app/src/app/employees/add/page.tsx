@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import EmployeeForm from '@/app/employee/components/EmployeeForm/EmployeeForm';
+import EmployeeForm from '@/app/employees/components/EmployeeForm/EmployeeForm';
 
 const formSchema = z.object({
   username: z.string().min(2, {

@@ -103,8 +103,8 @@ export default function EmployeesTableOptions({
       />
       <ColumnsMenuDropDown table={table}></ColumnsMenuDropDown>
 
-      <Button variant="default" className="ml-auto">
-        <Link href="/employee/add">Add</Link>
+      <Button variant="default" className="ml-auto" type="button">
+        <Link href="/employees/add">Add</Link>
       </Button>
     </div>
   );

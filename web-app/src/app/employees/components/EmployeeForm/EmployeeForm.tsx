@@ -24,10 +24,13 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
-import { useToast } from '@/components/ui/use-toast';
+import { toast, useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { Employee } from '@/types/employee';
 
-const formSchema = z.object({
+export const formSchema = z.object({
   firstName: z.string().min(2, {
     message: 'First Name must be at least 2 characters.',
   }),
@@ -48,53 +51,43 @@ const formSchema = z.object({
     .min(new Date('1900-01-01'), { message: 'Too old' }),
 });
 
-export default function EmployeeForm({}: {}) {
+type EmployeeFormProp = {
+  existentEmployee?: Employee;
+};
+
+export default function EmployeeForm({
+  existentEmployee,
+}: EmployeeFormProp) {
   const { toast } = useToast();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      jobTitle: '',
+      firstName: existentEmployee?.firstName ?? '',
+      lastName: existentEmployee?.lastName ?? '',
+      email: existentEmployee?.email ?? '',
+      jobTitle: existentEmployee?.jobTitle ?? '',
       dateOfJoining: new Date(),
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const response = await fetch('http://localhost/Employees', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Content type
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        toast({
-          description: 'Unable to add the employee',
-        });
-        return;
-      }
-
-      toast({
-        description: 'Employee added with success',
-      });
-    } catch (error) {
-      console.error(error);
+    console.log('onSubmit');
+    if (existentEmployee) {
+      const response = await editEmployee(
+        values,
+        existentEmployee.id
+      );
+    } else {
+      const response = await createEmployee(values);
     }
-
-    console.log(values);
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        // action={createEmployee}
         className="w-2/5 space-y-6"
       >
         <FormField
@@ -210,10 +203,88 @@ export default function EmployeeForm({}: {}) {
         <div className="flex flw-row space-x-4">
           <Button type="submit">Submit</Button>
           <Button variant="link" type="button">
-            <Link href="/employee">Back</Link>
+            <Link href="/employees" prefetch={false}>
+              Back
+            </Link>
           </Button>
         </div>
       </form>
     </Form>
   );
+}
+async function createEmployee(values: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  dateOfJoining: Date;
+}) {
+  try {
+    console.log('creating ...', values);
+
+    const response = await fetch('http://localhost/Employees', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Content type
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!response.ok) {
+      toast({
+        description: 'Unable to add the employee',
+      });
+      return;
+    }
+
+    toast({
+      description: 'Employee added with success',
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function editEmployee(
+  values: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    jobTitle: string;
+    dateOfJoining: Date;
+  },
+  id: string
+) {
+  try {
+    console.log('editing ...', values);
+
+    const data = {
+      ...values,
+      id,
+    };
+
+    const response = await fetch(`http://localhost/Employees/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json', // Content type
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      toast({
+        description: 'Unable to edit the employee',
+      });
+      return;
+    }
+
+    toast({
+      description: 'Employee edit with success',
+    });
+  } catch (error) {
+    console.error(error);
+    toast({
+      description: 'Unable to edit the employee',
+    });
+  }
 }

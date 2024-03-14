@@ -33,11 +33,23 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
   options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddFastEndpoints()
                 .SwaggerDocument(o =>
                 {
                   o.ShortSchemaNames = true;
                 });
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+  options.AddDefaultPolicy(builder =>
+              { //Enabling all just for sample purposes
+                builder.AllowAnyOrigin() // Allow requests from any origin
+                        .AllowAnyMethod() // Allow any HTTP method
+                        .AllowAnyHeader(); // Allow any HTTP headers
+              });
+});
 
 ConfigureMediatR();
 
@@ -71,12 +83,18 @@ else
   app.UseHsts();
 }
 
+app.MapHealthChecks("/healthz");
+
+app.UseCors();
+
 app.UseFastEndpoints()
     .UseSwaggerGen(); // Includes AddFileServer and static files middleware
 
 app.UseHttpsRedirection();
 
 SeedDatabase(app);
+
+
 
 app.Run();
 

@@ -16,7 +16,7 @@ public class Employee(string firstName,
 
   public string Email { get; private set; } = Guard.Against.NullOrEmpty(email, nameof(email));
 
-  public string JobTitle { get; private set; } = Guard.Against.NullOrEmpty(jobTitle, nameof(jobTitle));
+  public string JobTitle { get; private set; } = Guard.Against.IsValidEmail(jobTitle, nameof(jobTitle));
 
   public DateTime DateOfJoining { get; private set; } = dateOfJoining;
 
@@ -51,11 +51,6 @@ public class Employee(string firstName,
   public void UpdateDateOfJoining(DateTime dateOfJoining)
   {
     DateOfJoining = Guard.Against.Null(dateOfJoining, nameof(dateOfJoining));
-  }
-
-  public void DeleteEmployee()
-  {
-    throw new NotImplementedException();
   }
 
 }

@@ -17,9 +17,9 @@ export const formSchema =
     jobTitle: z
       .string()
       .min(2, { message: 'Job Title must be at least 2 characters' }),
-    dateOfJoining: z.coerce
-      .date({
+    dateOfJoining: z
+      .string({
         required_error: 'Please select a valid date',
       })
-      .min(new Date('1900-01-01'), { message: 'Too old' }),
+    // .min(new Date('1900-01-01'), { message: 'Too old' }),
   });

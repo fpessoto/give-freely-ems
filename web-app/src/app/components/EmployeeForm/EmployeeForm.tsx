@@ -18,10 +18,20 @@ import Link from 'next/link';
 import { Employee } from '@/types/employee';
 import { createEmployee } from '@/lib/services';
 import { State, saveEmployee } from '@/lib/actions';
-import { FieldPath, useForm } from 'react-hook-form';
+import { Controller, FieldPath, useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formSchema } from '@/lib/validation';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { format } from 'date-fns';
+import DatePicker from 'react-datepicker';
 
 type EmployeeFormProp = {
   existentEmployee?: Employee;
@@ -33,7 +43,7 @@ export interface FormValues {
   lastName: string;
   email: string;
   jobTitle: string;
-  dateOfJoining: Date;
+  dateOfJoining: string;
 }
 
 export default function EmployeeForm({
@@ -43,15 +53,7 @@ export default function EmployeeForm({
     saveEmployee,
     null
   );
-
-  // const {
-  //   register,
-  //   formState: { isValid, errors },
-  //   setError,
-  // } = useForm<FormValues>({
-  //   mode: 'all',
-  //   resolver: zodResolver(formSchema),
-  // });
+  const [date, setDate] = useState(new Date().toISOString());
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,7 +63,7 @@ export default function EmployeeForm({
       lastName: existentEmployee?.lastName ?? '',
       email: existentEmployee?.email ?? '',
       jobTitle: existentEmployee?.jobTitle ?? '',
-      dateOfJoining: new Date(),
+      dateOfJoining: '2024-1-1',
     },
   });
 
@@ -71,6 +73,9 @@ export default function EmployeeForm({
     }
     // In case our form action returns `error` we can now `setError`s
     if (state.status === 'error') {
+      toast({
+        description: 'Error on save',
+      });
       state.errors?.forEach((error) => {
         form.setError(error.path as FieldPath<FormValues>, {
           message: error.message,
@@ -78,7 +83,9 @@ export default function EmployeeForm({
       });
     }
     if (state.status === 'success') {
-      alert(state.message);
+      toast({
+        description: 'Saved with success',
+      });
     }
   }, [state, form, form?.setError]);
 
@@ -165,22 +172,9 @@ export default function EmployeeForm({
           )}
         />
 
+        <input type="hidden" name="dateOfJoining" value={date} />
+
         <FormField
-          control={form.control}
-          name="dateOfJoining"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date Of Joining</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* <FormField
           control={form.control}
           name="dateOfJoining"
           render={({ field }) => (
@@ -208,15 +202,23 @@ export default function EmployeeForm({
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
+                    selected={date}
+                    onSelect={(date) => {
+                      const convertedDate = date?.toISOString() ?? '';
+                      setDate(date?.toISOString() ?? '');
+                      form.setValue('dateOfJoining', convertedDate);
+                      field.onChange;
+                    }}
                     disabled={(date) => date < new Date('1900-01-01')}
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
+
               <FormMessage />
-            </FormItem> */}
+            </FormItem>
+          )}
+        />
 
         <div className="flex flw-row space-x-4">
           <Button type="submit">Submit</Button>

@@ -24,10 +24,7 @@ export type State =
 export async function saveEmployee(prevState: State | null, data: FormData): Promise<State> {
   console.log('editing', data);
 
-  // we're gonna put a delay in here to simulate some kind of data processing like persisting data
   try {
-    // Artificial delay; don't forget to remove that!
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Validate our data
     const { id, firstName, lastName, email, jobTitle, dateOfJoining } = formSchema.parse(data);
@@ -38,13 +35,14 @@ export async function saveEmployee(prevState: State | null, data: FormData): Pro
       createEmployee({ firstName, lastName, email, jobTitle, dateOfJoining })
     }
 
-    revalidatePath('/employees');
+    revalidatePath('/');
 
     return {
       status: "success",
       message: `Welcome, ${firstName} ${lastName ? lastName : ""}!`,
     };
   } catch (e) {
+    console.error(e);
     // In case of a ZodError (caused by our validation) we're adding issues to our response
     if (e instanceof ZodError) {
       return {
@@ -66,5 +64,5 @@ export async function saveEmployee(prevState: State | null, data: FormData): Pro
 export async function deleteEmployeeAction(id: string) {
   deleteEmployee(id)
 
-  revalidatePath('/employees');
+  revalidatePath('/');
 }

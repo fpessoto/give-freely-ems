@@ -1,12 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Employee } from '@/types/employee';
-
-import {
-  DotsHorizontalIcon,
-  Pencil1Icon,
-  TrashIcon,
-} from '@radix-ui/react-icons';
+import { format } from 'date-fns';
+import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteEmployeeAction } from '@/lib/actions';
 import Link from 'next/link';
@@ -102,7 +98,9 @@ export const columns: ColumnDef<Employee>[] = [
   {
     accessorKey: 'dateOfJoining',
     header: 'Date of Joining',
-    cell: ({ row }) => <div>{row.getValue('dateOfJoining')}</div>,
+    cell: ({ row }) => (
+      <div>{format(row.getValue('dateOfJoining'), 'MM/dd/yyyy')}</div>
+    ),
   },
   {
     accessorKey: 'totalYearsOfService',

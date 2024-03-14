@@ -1,15 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Form,
   FormControl,
@@ -20,48 +13,50 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { format } from 'date-fns';
-import { toast, useToast } from '@/components/ui/use-toast';
+import { toast } from '@/components/ui/use-toast';
 import Link from 'next/link';
 import { Employee } from '@/types/employee';
-import { createEmployee, editEmployee } from '@/lib/services';
-
-export const formSchema = z.object({
-  firstName: z.string().min(2, {
-    message: 'First Name must be at least 2 characters.',
-  }),
-  lastName: z.string().min(2, {
-    message: 'Last Name must be at least 2 characters.',
-  }),
-  email: z
-    .string()
-    .min(1, { message: 'This field has to be filled.' })
-    .email('This is not a valid email.'),
-  jobTitle: z
-    .string()
-    .min(2, { message: 'Job Title must be at least 2 characters' }),
-  dateOfJoining: z
-    .date({
-      required_error: 'Please select a valid date',
-    })
-    .min(new Date('1900-01-01'), { message: 'Too old' }),
-});
+import { createEmployee } from '@/lib/services';
+import { State, saveEmployee } from '@/lib/actions';
+import { FieldPath, useForm } from 'react-hook-form';
+import { useFormState } from 'react-dom';
+import { useEffect } from 'react';
+import { formSchema } from '@/lib/validation';
 
 type EmployeeFormProp = {
   existentEmployee?: Employee;
 };
 
+export interface FormValues {
+  id?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  dateOfJoining: Date;
+}
+
 export default function EmployeeForm({
   existentEmployee,
 }: EmployeeFormProp) {
-  const { toast } = useToast();
+  const [state, formAction] = useFormState<State, FormData>(
+    saveEmployee,
+    null
+  );
+
+  // const {
+  //   register,
+  //   formState: { isValid, errors },
+  //   setError,
+  // } = useForm<FormValues>({
+  //   mode: 'all',
+  //   resolver: zodResolver(formSchema),
+  // });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: existentEmployee?.id ?? '',
       firstName: existentEmployee?.firstName ?? '',
       lastName: existentEmployee?.lastName ?? '',
       email: existentEmployee?.email ?? '',
@@ -70,24 +65,38 @@ export default function EmployeeForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (existentEmployee) {
-      await edit({
-        ...values,
-        id: existentEmployee.id,
-      });
-    } else {
-      await create(values);
+  useEffect(() => {
+    if (!state) {
+      return;
     }
-  }
+    // In case our form action returns `error` we can now `setError`s
+    if (state.status === 'error') {
+      state.errors?.forEach((error) => {
+        form.setError(error.path as FieldPath<FormValues>, {
+          message: error.message,
+        });
+      });
+    }
+    if (state.status === 'success') {
+      alert(state.message);
+    }
+  }, [state, form, form?.setError]);
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        // action={createEmployee}
-        className="w-2/5 space-y-6"
-      >
+      <form action={formAction} className="w-2/5 space-y-6">
+        <FormField
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input type="hidden" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="firstName"
@@ -160,6 +169,21 @@ export default function EmployeeForm({
           control={form.control}
           name="dateOfJoining"
           render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date Of Joining</FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* <FormField
+          control={form.control}
+          name="dateOfJoining"
+          render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Date of Joining</FormLabel>
               <Popover>
@@ -191,11 +215,9 @@ export default function EmployeeForm({
                   />
                 </PopoverContent>
               </Popover>
-
               <FormMessage />
-            </FormItem>
-          )}
-        />
+            </FormItem> */}
+
         <div className="flex flw-row space-x-4">
           <Button type="submit">Submit</Button>
           <Button variant="link" type="button">
@@ -207,6 +229,16 @@ export default function EmployeeForm({
       </form>
     </Form>
   );
+
+  // return (
+  //   <form action={formAction}>
+  //     <FormContent
+  //       register={register}
+  //       isValid={isValid}
+  //       errors={errors}
+  //     />
+  //   </form>
+  // );
 }
 async function create(values: {
   firstName: string;
@@ -238,7 +270,7 @@ async function edit(values: {
   dateOfJoining: Date;
 }) {
   try {
-    await editEmployee(values);
+    // await editEmployee(values);
 
     toast({
       description: 'Employee edit with success',

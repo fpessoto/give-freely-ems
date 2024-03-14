@@ -25,6 +25,21 @@ export const getEmployee = async (id: string) => {
   return data;
 };
 
+export const getEmployees = async () => {
+
+  try {
+    // Fetch data from external API
+    const res = await fetch(`${BASE_URL}/Employees`, {
+      next: { tags: ['get-employees'] },
+    });
+    const data: { employees: Employee[] } = await res.json();
+    return data.employees;
+  } catch (error) {
+    throw error;
+  }
+
+};
+
 export const createEmployee = async (data: {
   firstName: string;
   lastName: string;

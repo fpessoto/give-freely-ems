@@ -12,7 +12,7 @@ public static class SeedData
 
   public static readonly Employee Employee1 = new Employee("Steve", "Kaufer", "skaufer@wegivefreely.com", "CEO", new DateTime(2023, 1, 1));
   public static readonly Employee Employee2 = new Employee("Brendan", "Buono", "bbuono@wegivefreely.com", "CTO", new DateTime(2023, 1, 1));
-  public static readonly Employee Employee3 = new Employee("Felipe", "Pessoto", "fpesoto@wegivefreely.com", "Sr. Fullstack Engineer", new DateTime(2024, 4, 2));
+  public static readonly Employee Employee3 = new Employee("Felipe", "Pessoto", "fpessoto@wegivefreely.com", "Sr. Fullstack Engineer", new DateTime(2024, 4, 2));
 
   public static void Initialize(IServiceProvider serviceProvider)
   {

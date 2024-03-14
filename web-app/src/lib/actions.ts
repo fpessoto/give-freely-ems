@@ -22,7 +22,6 @@ export type State =
 
 
 export async function saveEmployee(prevState: State | null, data: FormData): Promise<State> {
-  console.log('editing', data);
 
   try {
 

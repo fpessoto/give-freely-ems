@@ -1,8 +1,7 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -13,25 +12,24 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
-import Link from 'next/link';
-import { Employee } from '@/types/employee';
-import { createEmployee } from '@/lib/services';
-import { State, saveEmployee } from '@/lib/actions';
-import { Controller, FieldPath, useForm } from 'react-hook-form';
-import { useFormState } from 'react-dom';
-import { useEffect, useState } from 'react';
-import { formSchema } from '@/lib/validation';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from '@radix-ui/react-icons';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { toast } from '@/components/ui/use-toast';
+import { State, saveEmployee } from '@/lib/actions';
+import { cn } from '@/lib/utils';
+import { formSchema } from '@/lib/validation';
+import { Employee } from '@/types/employee';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
-import DatePicker from 'react-datepicker';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
+import { FieldPath, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type EmployeeFormProp = {
   existentEmployee?: Employee;
@@ -172,8 +170,8 @@ export default function EmployeeForm({
           )}
         />
 
+        {/* ADDING dateOfJoining as hidden because server action was not able to get the date value from the Calendar component below */}
         <input type="hidden" name="dateOfJoining" value={date} />
-
         <FormField
           control={form.control}
           name="dateOfJoining"
@@ -231,56 +229,4 @@ export default function EmployeeForm({
       </form>
     </Form>
   );
-
-  // return (
-  //   <form action={formAction}>
-  //     <FormContent
-  //       register={register}
-  //       isValid={isValid}
-  //       errors={errors}
-  //     />
-  //   </form>
-  // );
-}
-async function create(values: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  jobTitle: string;
-  dateOfJoining: Date;
-}) {
-  try {
-    await createEmployee(values);
-
-    toast({
-      description: 'Employee added with success',
-    });
-  } catch (error) {
-    console.error(error);
-    toast({
-      description: 'Error trying to create the Employee!',
-    });
-  }
-}
-
-async function edit(values: {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  jobTitle: string;
-  dateOfJoining: Date;
-}) {
-  try {
-    // await editEmployee(values);
-
-    toast({
-      description: 'Employee edit with success',
-    });
-  } catch (error) {
-    console.error(error);
-    toast({
-      description: 'Unable to edit the employee',
-    });
-  }
 }

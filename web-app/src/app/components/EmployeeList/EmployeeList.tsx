@@ -20,7 +20,7 @@ type EmployeeDataTableProps = {
   employees: Employee[];
 };
 
-export default function EmployeesDataTable({
+export default function EmployeeList({
   employees,
 }: EmployeeDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);

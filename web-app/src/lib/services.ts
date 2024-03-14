@@ -45,7 +45,7 @@ export const createEmployee = async (data: {
   lastName: string;
   email: string;
   jobTitle: string;
-  dateOfJoining: Date;
+  dateOfJoining: string;
 }) => {
   const response = await fetch(`${BASE_URL}/Employees`, {
     method: 'POST',
@@ -65,7 +65,7 @@ export const editEmployee = async (data: {
   lastName: string;
   email: string;
   jobTitle: string;
-  dateOfJoining: Date;
+  dateOfJoining: string;
 
 }) => {
   const response = await fetch(`${BASE_URL}/Employees/${data.id}`, {

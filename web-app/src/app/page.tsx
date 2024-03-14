@@ -1,14 +1,5 @@
-import EmployeesDataTable from './components/EmployeeList/EmployeeDataTable';
-import { Employee } from '@/types/employee';
-
-export const getEmployees = async () => {
-  // Fetch data from external API
-  const res = await fetch('http://localhost/Employees', {
-    next: { tags: ['get-employees'] },
-  });
-  const data: { employees: Employee[] } = await res.json();
-  return data.employees;
-};
+import { getEmployees } from '@/lib/services';
+import EmployeeList from './components/EmployeeList/EmployeeList';
 
 export default async function EmployeePage() {
   const data = await getEmployees();
@@ -19,7 +10,7 @@ export default async function EmployeePage() {
         Employees
       </h1>
 
-      <EmployeesDataTable employees={data} />
+      <EmployeeList employees={data} />
     </>
   );
 }

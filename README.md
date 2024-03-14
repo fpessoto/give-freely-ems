@@ -42,17 +42,18 @@ npm run dev --experimental-https
 Unit test
 
 ```bash
-
+cd api/GiveFreely.EMS
+dotnet run test --project tests/GiveFreely.EMS.UnitTests
 ```
 
 Integration test
 
 ```bash
-
+dotnet run test --project tests/GiveFreely.EMS.IntegrationTests
 ```
 
 Functional test
 
 ```bash
-
+dotnet run test --project tests/GiveFreely.EMS.FunctionalTests
 ```

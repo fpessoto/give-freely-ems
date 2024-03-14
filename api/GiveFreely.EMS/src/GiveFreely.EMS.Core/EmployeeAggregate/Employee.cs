@@ -14,9 +14,9 @@ public class Employee(string firstName,
 
   public string LastName { get; private set; } = Guard.Against.NullOrEmpty(lastName, nameof(lastName));
 
-  public string Email { get; private set; } = Guard.Against.NullOrEmpty(email, nameof(email));
+  public string Email { get; private set; } = Guard.Against.IsValidEmail(email, nameof(email));
 
-  public string JobTitle { get; private set; } = Guard.Against.IsValidEmail(jobTitle, nameof(jobTitle));
+  public string JobTitle { get; private set; } = Guard.Against.NullOrEmpty(jobTitle, nameof(jobTitle));
 
   public DateTime DateOfJoining { get; private set; } = dateOfJoining;
 

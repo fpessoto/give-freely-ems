@@ -1,17 +1,17 @@
 ﻿using System.Reflection;
 using Ardalis.ListStartupServices;
 using Ardalis.SharedKernel;
-using GiveFreely.EMS.Core.ContributorAggregate;
 using GiveFreely.EMS.Core.Interfaces;
 using GiveFreely.EMS.Infrastructure;
 using GiveFreely.EMS.Infrastructure.Data;
 using GiveFreely.EMS.Infrastructure.Email;
-using GiveFreely.EMS.UseCases.Contributors.Create;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using MediatR;
 using Serilog;
 using Serilog.Extensions.Logging;
+using GiveFreely.EMS.Core.EmployeeAggregate;
+using GiveFreely.EMS.UseCases.Employees.Create;
 
 var logger = Log.Logger = new LoggerConfiguration()
   .Enrich.FromLogContext()
@@ -121,8 +121,8 @@ void ConfigureMediatR()
 {
   var mediatRAssemblies = new[]
 {
-  Assembly.GetAssembly(typeof(Contributor)), // Core
-  Assembly.GetAssembly(typeof(CreateContributorCommand)) // UseCases
+  Assembly.GetAssembly(typeof(Employee)), // Core
+  Assembly.GetAssembly(typeof(CreateEmployeeCommand)) // UseCases
 };
   builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(mediatRAssemblies!));
   builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));

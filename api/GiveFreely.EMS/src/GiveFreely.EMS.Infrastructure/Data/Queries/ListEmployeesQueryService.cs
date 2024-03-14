@@ -11,8 +11,7 @@ public class ListEmployeesQueryService(AppDbContext _db) : IListEmployeesQuerySe
 
   public async Task<IEnumerable<EmployeeDTO>> ListAsync()
   {
-    // NOTE: This will fail if testing with EF InMemory provider!
-    var result = await _db.Employees// don't fetch other big columns
+    var result = await _db.Employees
       .Select(e => new EmployeeDTO(e.Id, e.FirstName, e.LastName, e.Email, e.JobTitle, e.DateOfJoining, e.TotalYearsOfService))
       .ToListAsync();
 

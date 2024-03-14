@@ -1,5 +1,5 @@
 ﻿using Ardalis.SharedKernel;
-using GiveFreely.EMS.Core.ContributorAggregate;
+using GiveFreely.EMS.Core.EmployeeAggregate;
 using GiveFreely.EMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,8 +36,8 @@ public abstract class BaseEfRepoTestFixture
     return builder.Options;
   }
 
-  protected EfRepository<Contributor> GetRepository()
+  protected EfRepository<Employee> GetRepository()
   {
-    return new EfRepository<Contributor>(_dbContext);
+    return new EfRepository<Employee>(_dbContext);
   }
 }

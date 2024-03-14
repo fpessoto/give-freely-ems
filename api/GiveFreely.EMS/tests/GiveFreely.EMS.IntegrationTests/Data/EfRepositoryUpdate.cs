@@ -1,4 +1,4 @@
-﻿using GiveFreely.EMS.Core.ContributorAggregate;
+﻿using GiveFreely.EMS.Core.EmployeeAggregate;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -6,41 +6,48 @@ namespace GiveFreely.EMS.IntegrationTests.Data;
 
 public class EfRepositoryUpdate : BaseEfRepoTestFixture
 {
+
+  private readonly string _testLastName = "Doe";
+  private readonly string _testEmail = "jdoe@mail.com";
+  private readonly string _testJobTitle = "Analyst";
+
+  private readonly DateTime _testDateOfJoining = DateTime.Now.AddYears(-2);
+
   [Fact]
   public async Task UpdatesItemAfterAddingIt()
   {
-    // add a Contributor
+    // add a Employee
     var repository = GetRepository();
     var initialName = Guid.NewGuid().ToString();
-    var Contributor = new Contributor(initialName);
+    var Employee = new Employee(initialName, _testLastName, _testEmail, _testJobTitle, _testDateOfJoining);
 
-    await repository.AddAsync(Contributor);
+    await repository.AddAsync(Employee);
 
     // detach the item so we get a different instance
-    _dbContext.Entry(Contributor).State = EntityState.Detached;
+    _dbContext.Entry(Employee).State = EntityState.Detached;
 
     // fetch the item and update its title
-    var newContributor = (await repository.ListAsync())
-        .FirstOrDefault(Contributor => Contributor.Name == initialName);
-    if (newContributor == null)
+    var newEmployee = (await repository.ListAsync())
+        .FirstOrDefault(Employee => Employee.FirstName == initialName);
+    if (newEmployee == null)
     {
-      Assert.NotNull(newContributor);
+      Assert.NotNull(newEmployee);
       return;
     }
-    Assert.NotSame(Contributor, newContributor);
+    Assert.NotSame(Employee, newEmployee);
     var newName = Guid.NewGuid().ToString();
-    newContributor.UpdateName(newName);
+    newEmployee.UpdateFirstName(newName);
 
     // Update the item
-    await repository.UpdateAsync(newContributor);
+    await repository.UpdateAsync(newEmployee);
 
     // Fetch the updated item
     var updatedItem = (await repository.ListAsync())
-        .FirstOrDefault(Contributor => Contributor.Name == newName);
+        .FirstOrDefault(Employee => Employee.FirstName == newName);
 
     Assert.NotNull(updatedItem);
-    Assert.NotEqual(Contributor.Name, updatedItem?.Name);
-    Assert.Equal(Contributor.Status, updatedItem?.Status);
-    Assert.Equal(newContributor.Id, updatedItem?.Id);
+    Assert.NotEqual(Employee.FirstName, updatedItem?.FirstName);
+    Assert.Equal(Employee.LastName, updatedItem?.LastName);
+    Assert.Equal(newEmployee.Id, updatedItem?.Id);
   }
 }
